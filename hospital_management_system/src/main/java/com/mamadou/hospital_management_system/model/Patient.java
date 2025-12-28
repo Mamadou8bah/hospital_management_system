@@ -22,7 +22,11 @@ public class Patient {
     @NotNull
     private String gender;
 
-    String email= user.getEmail();
+    String email= getEmail();
+
+    public String getEmail() {
+        return (user != null) ? user.getEmail() : null;
+    }
 
     @NotNull
     @Size(min = 1, max = 2)
