@@ -48,6 +48,20 @@ public class DoctorService {
         doctorRepository.deleteById(id);
         return new MessageResponse("Doctor deleted");
     }
+
+    public DoctorInfo getDoctorById(int id) {
+        Doctor doctor = doctorRepository.findById(id).orElse(null);
+        if(doctor==null){
+            throw new RuntimeException("Doctor not found");
+        }
+        DoctorInfo doctorInfo=new DoctorInfo(
+                doctor.getUser().getFirstName(),
+                doctor.getUser().getLastName(),
+                doctor.getSpecialty()
+        );
+        return doctorInfo;
+
+    }
     public List<DoctorInfo> findAllDoctors() {
         return doctorRepository.findAll()
                 .stream()
