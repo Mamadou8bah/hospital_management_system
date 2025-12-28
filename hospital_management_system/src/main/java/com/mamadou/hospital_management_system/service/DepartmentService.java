@@ -17,13 +17,13 @@ public class DepartmentService {
 
     public MessageResponse addDepartment(String departmentName) {
         Department department = new Department();
-        department.setDepartmentName(departmentName);
+        department.setName(departmentName);
         departmentRepository.save(department);
         return new MessageResponse(departmentName+" Department Added");
     }
     public MessageResponse updateDepartment(String departmentName, short id) {
         Department department = new Department();
-        department.setDepartmentName(departmentName);
+        department.setName(departmentName);
         departmentRepository.save(department);
         return new MessageResponse(departmentName+" Department Updated");
     }
