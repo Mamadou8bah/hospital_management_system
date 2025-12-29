@@ -35,6 +35,7 @@ public class DoctorScheduleService {
 
         return new DoctorScheduleDTO(
                 saved.getDoctor().getId(),
+                saved.getAvailableSlots(),
                 saved.getDayOfWeek(),
                 saved.getStartTime(),
                 saved.getEndTime()
@@ -47,6 +48,7 @@ public class DoctorScheduleService {
                 .stream()
                 .map(s -> new DoctorScheduleDTO(
                         s.getDoctor().getId(),
+                        s.getAvailableSlots(),
                         s.getDayOfWeek(),
                         s.getStartTime(),
                         s.getEndTime()
@@ -55,11 +57,13 @@ public class DoctorScheduleService {
     }
 
     // Get schedules for a specific doctor
-    public List<DoctorScheduleDTO> getSchedulesByDoctor(Long doctorId) {
-        return doctorScheduleRepository.findById(doctorId)
+    public List<DoctorScheduleDTO> getSchedulesByDoctor(int doctorId) {
+        Doctor doctor=doctorRepository.findById(doctorId).orElseThrow(() -> new RuntimeException("Doctor not found"));
+        return doctorScheduleRepository.findByDoctor(doctor)
                 .stream()
                 .map(s -> new DoctorScheduleDTO(
                         s.getDoctor().getId(),
+                        s.getAvailableSlots(),
                         s.getDayOfWeek(),
                         s.getStartTime(),
                         s.getEndTime()
