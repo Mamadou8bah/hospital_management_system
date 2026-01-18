@@ -2,7 +2,7 @@ spring:
   datasource:
 
   # POSTGRESQL Configuration
-  driver-class-name: org.postgresql.Driverg
+  driver-class-name: org.postgresql.Driver
   password: postgres
   username: postgres
     url: jdbc:postgresql://localhost:5432/hospital_management_system
