@@ -4,10 +4,15 @@ import com.mamadou.hospital_management_system.model.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department,Short> {
 
     Optional<Department> findByName(String name);
+
+    Optional<Department> findByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCase(String name);
 }

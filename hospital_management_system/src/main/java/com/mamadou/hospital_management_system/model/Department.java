@@ -1,5 +1,6 @@
 package com.mamadou.hospital_management_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -13,8 +14,10 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private short id;
     @NotBlank
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(mappedBy = "department")
     private List<Doctor> doctors;
 }

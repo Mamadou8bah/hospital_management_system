@@ -1,10 +1,27 @@
 spring:
   datasource:
-    username: postgres
+
+  # POSTGRESQL Configuration
+  driver-class-name: org.postgresql.Driverg
+  password: postgres
+  username: postgres
     url: jdbc:postgresql://localhost:5432/hospital_management_system
+
+  # MYSQL Configuration
+    # url: ${DB_URL:jdbc:mysql://localhost:3306/hospital_management_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    # username: ${DB_USERNAME:root}
+    # password: ${DB_PASSWORD:327462}
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
 
   application:
     security:
       jwt:
-        secret-key: ${JWT_SECRET}
-        expiration: ${JWT_EXPIRATION}
+        # Dev defaults so the app can start locally without env vars.
+        # Override in production via environment variables.
+        secret-key: ${JWT_SECRET:change-me-change-me-change-me-change-me}
+        expiration: ${JWT_EXPIRATION:86400000}
