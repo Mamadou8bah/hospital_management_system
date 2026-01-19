@@ -10,7 +10,7 @@ spring:
   # MYSQL Configuration
     # url: ${DB_URL:jdbc:mysql://localhost:3306/hospital_management_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     # username: ${DB_USERNAME:root}
-    # password: ${DB_PASSWORD:327462}
+    # password: ${DB_PASSWORD:123456}
     # driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

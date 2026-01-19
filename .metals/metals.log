@@ -3551,3 +3551,20 @@ INFO: Unsupported notification method: $/setTrace
 2026.01.18 17:56:09 INFO  shutting down Metals
 2026.01.18 17:56:09 INFO  Shut down connection with build server.
 2026.01.18 17:56:09 INFO  Exiting server
+2026.01.18 18:01:37 INFO  Started: Metals version 1.6.4 in folders 'C:\Users\EbrimaMbye\Desktop\A_Teaching\binta\FINAL PROJECT - PROGRAMMING II\hospital_management_system' for client Visual Studio Code 1.108.1.
+2026.01.18 18:01:37 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.01.18 18:01:38 INFO  Attempting to connect to the build server...
+2026.01.18 18:01:38 INFO  Found a Bloop server running
+2026.01.18 18:01:39 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at C:\Users\EbrimaMbye\Desktop\A_Teaching\binta\FINAL PROJECT - PROGRAMMING II\hospital_management_system\.metals\bsp.trace.json or C:\Users\EbrimaMbye\AppData\Local\scalameta\metals\cache\bsp.trace.json
+2026.01.18 18:01:39 INFO  time: Connected to build server in 0.34s
+2026.01.18 18:01:39 INFO  Connected to Build server: Bloop v2.0.17
+2026.01.18 18:01:39 INFO  time: Imported build in 0.16s
+2026.01.18 18:01:42 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.01.18 18:01:44 INFO  time: indexed workspace in 5.54s
+2026.01.18 18:01:45 INFO  compiling hospital_management_system (49 java sources)
+2026.01.18 18:01:48 WARN  javac exited with exit code 1
+2026.01.18 18:01:48 INFO  time: compiled hospital_management_system in 3.12s
+2026.01.18 18:04:13 INFO  Shutting down server
+2026.01.18 18:04:13 INFO  shutting down Metals
+2026.01.18 18:04:13 INFO  Shut down connection with build server.
+2026.01.18 18:04:13 INFO  Exiting server
