@@ -145,7 +145,7 @@ const Login = () => {
 
           <footer className="mt-12 text-center">
             <p className="text-sm text-gray-500">
-              Don't have an account? <button className="text-primary font-bold hover:underline">Contact Admin</button>
+              Don't have an account? <button className="text-primary font-bold hover:underline" onClick={() => window.location.href = "mailto:admin@clinova.com"}>Contact Admin</button>
             </p>
           </footer>
         </div>
