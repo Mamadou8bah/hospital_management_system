@@ -20,11 +20,6 @@ public class Doctor {
     @OneToOne
     private User user;
 
-    private String email=getEmail();
-    public String getEmail() {
-        return (user != null) ? user.getEmail() : null;
-    }
-
     @NotNull
     private String specialty;
 

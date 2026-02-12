@@ -37,7 +37,7 @@ public class MedicalRecordService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        Doctor doctor = doctorRepository.findByEmail(username)
+        Doctor doctor = doctorRepository.findByUserEmail(username)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
         Appointment appointment = null;

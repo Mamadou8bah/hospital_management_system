@@ -164,7 +164,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Doctor createDoctor(String first, String last, String email, String specialty, Department dept, String phone, String about, int exp, int patients) {
-        return doctorRepository.findByEmail(email).orElseGet(() -> {
+        return doctorRepository.findByUserEmail(email).orElseGet(() -> {
             User user = createUser(first, last, email, "password123", "Medical Staff Housing", LocalDate.of(1980, 1, 1), Role.DOCTOR);
             Doctor doc = new Doctor();
             doc.setUser(user);
