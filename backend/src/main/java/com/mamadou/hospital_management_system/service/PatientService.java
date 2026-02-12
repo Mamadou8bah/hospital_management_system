@@ -3,6 +3,7 @@ package com.mamadou.hospital_management_system.service;
 import com.mamadou.hospital_management_system.dto.AddPatientRequest;
 import com.mamadou.hospital_management_system.dto.MessageResponse;
 import com.mamadou.hospital_management_system.dto.PatientDetailResponse;
+import com.mamadou.hospital_management_system.dto.PatientStatsResponse;
 import com.mamadou.hospital_management_system.model.Patient;
 import com.mamadou.hospital_management_system.model.User;
 import com.mamadou.hospital_management_system.repository.PatientRepository;
@@ -196,7 +197,7 @@ public class PatientService {
                 r.getId(),
                 r.getDiagnosis(),
                 r.getPrescription(),
-                r.getCreatedAt().toString()
+                r.getIssueDate() != null ? r.getIssueDate().toString() : "N/A"
             ))
             .collect(Collectors.toList());
 
@@ -220,32 +221,5 @@ public class PatientService {
             appointments,
             records
         );
-    }
-
-    public MessageResponse updatePatient(long id,AddPatientRequest  request) {
-        User user=userRepository.findByEmail(request.email()).orElse(null);
-        if(user==null){
-            return new MessageResponse("No User with Such Email");
-        }
-        Patient patient=patientRepository.findById(id).orElse(null);
-        if(patient==null){
-            return new MessageResponse("Patient Not Found");
-        }
-        patient.setGender(request.gender());
-        patient.setUser(user);
-        patient.setBloodGroup(request.bloodGroup());
-        patient.setAge(request.age());
-        patient.setWeight(request.weight());
-        patient.setHeight(request.height());
-        patient.setPhone(request.phone());
-        patient.setAddress(request.address());
-        patient.setStatus(request.status());
-        patient.setType(request.type());
-        patient.setPulseRate(request.pulseRate());
-        patient.setBloodPressure(request.bloodPressure());
-        patient.setBloodOxygen(request.bloodOxygen());
-        
-        patientRepository.save(patient);
-        return new MessageResponse("Patient Updated");
     }
 }

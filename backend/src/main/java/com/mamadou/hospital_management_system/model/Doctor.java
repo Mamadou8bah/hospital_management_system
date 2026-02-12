@@ -46,6 +46,6 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "issuedBy")
     private List<MedicalRecord> records;
 }

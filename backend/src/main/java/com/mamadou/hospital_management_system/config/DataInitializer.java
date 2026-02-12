@@ -90,22 +90,22 @@ public class DataInitializer implements CommandLineRunner {
         seedSchedule(doc7, DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(20, 0));
 
         // 6. Seed Appointments
-        createAppointment(pat1, doc1, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0), "Heart checkup", "Consultation", BookingStatus.PENDING);
-        createAppointment(pat2, doc2, LocalDateTime.now().plusDays(2).withHour(11).withMinute(30), "Child vaccination", "Follow-up", BookingStatus.CONFIRMED);
-        createAppointment(pat3, doc1, LocalDateTime.now().minusDays(1).withHour(14).withMinute(0), "Routine BP check", "Checkup", BookingStatus.COMPLETED);
-        createAppointment(pat4, doc7, LocalDateTime.now().plusDays(3).withHour(9, 0), "Antenatal checkup", "Consultation", BookingStatus.CONFIRMED);
-        createAppointment(pat5, doc4, LocalDateTime.now().plusDays(1).withHour(15, 0), "Post-op review", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat6, doc5, LocalDateTime.now().plusDays(4).withHour(11, 0), "Rash consultation", "Consultation", BookingStatus.PENDING);
+        createAppointment(pat1, doc1, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Heart checkup", "Consultation", BookingStatus.PENDING);
+        createAppointment(pat2, doc2, LocalDateTime.now().plusDays(2).withHour(11).withMinute(30).withSecond(0).withNano(0), "Child vaccination", "Follow-up", BookingStatus.CONFIRMED);
+        createAppointment(pat3, doc1, LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0), "Routine BP check", "Checkup", BookingStatus.COMPLETED);
+        createAppointment(pat4, doc7, LocalDateTime.now().plusDays(3).withHour(9).withMinute(0).withSecond(0).withNano(0), "Antenatal checkup", "Consultation", BookingStatus.CONFIRMED);
+        createAppointment(pat5, doc4, LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0), "Post-op review", "Follow-up", BookingStatus.PENDING);
+        createAppointment(pat6, doc5, LocalDateTime.now().plusDays(4).withHour(11).withMinute(0).withSecond(0).withNano(0), "Rash consultation", "Consultation", BookingStatus.PENDING);
         createAppointment(pat8, doc2, LocalDateTime.now().minusHours(2), "Persistent cough", "Emergency", BookingStatus.COMPLETED);
-        createAppointment(pat9, doc1, LocalDateTime.now().plusDays(2).withHour(9, 0), "Chronic heart issues", "Consultation", BookingStatus.CONFIRMED);
-        createAppointment(pat10, doc1, LocalDateTime.now().plusDays(5).withHour(14, 30), "Migraine follow-up", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat11, doc4, LocalDateTime.now().plusDays(1).withHour(10, 0), "Cast review", "Checkup", BookingStatus.CONFIRMED);
-        createAppointment(pat12, doc6, LocalDateTime.now().minusDays(2).withHour(11, 0), "Chest X-ray review", "Consultation", BookingStatus.COMPLETED);
-        createAppointment(pat13, doc3, LocalDateTime.now().plusDays(3).withHour(13, 0), "Fever and chills", "Emergency", BookingStatus.CONFIRMED);
-        createAppointment(pat14, doc7, LocalDateTime.now().minusDays(5).withHour(8, 0), "Initial prenatal", "Consultation", BookingStatus.COMPLETED);
-        createAppointment(pat15, doc3, LocalDateTime.now().plusDays(1).withHour(16, 0), "Spinal review", "Consultation", BookingStatus.PENDING);
-        createAppointment(pat4, doc7, LocalDateTime.now().plusWeeks(2).withHour(10, 0), "Second Trimester Scan", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat1, doc4, LocalDateTime.now().plusWeeks(1).withHour(11, 0), "Physical Therapy", "Checkup", BookingStatus.CONFIRMED);
+        createAppointment(pat9, doc1, LocalDateTime.now().plusDays(2).withHour(9).withMinute(0).withSecond(0).withNano(0), "Chronic heart issues", "Consultation", BookingStatus.CONFIRMED);
+        createAppointment(pat10, doc1, LocalDateTime.now().plusDays(5).withHour(14).withMinute(30).withSecond(0).withNano(0), "Migraine follow-up", "Follow-up", BookingStatus.PENDING);
+        createAppointment(pat11, doc4, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Cast review", "Checkup", BookingStatus.CONFIRMED);
+        createAppointment(pat12, doc6, LocalDateTime.now().minusDays(2).withHour(11).withMinute(0).withSecond(0).withNano(0), "Chest X-ray review", "Consultation", BookingStatus.COMPLETED);
+        createAppointment(pat13, doc3, LocalDateTime.now().plusDays(3).withHour(13).withMinute(0).withSecond(0).withNano(0), "Fever and chills", "Emergency", BookingStatus.CONFIRMED);
+        createAppointment(pat14, doc7, LocalDateTime.now().minusDays(5).withHour(8).withMinute(0).withSecond(0).withNano(0), "Initial prenatal", "Consultation", BookingStatus.COMPLETED);
+        createAppointment(pat15, doc3, LocalDateTime.now().plusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0), "Spinal review", "Consultation", BookingStatus.PENDING);
+        createAppointment(pat4, doc7, LocalDateTime.now().plusWeeks(2).withHour(10).withMinute(0).withSecond(0).withNano(0), "Second Trimester Scan", "Follow-up", BookingStatus.PENDING);
+        createAppointment(pat1, doc4, LocalDateTime.now().plusWeeks(1).withHour(11).withMinute(0).withSecond(0).withNano(0), "Physical Therapy", "Checkup", BookingStatus.CONFIRMED);
 
         // 7. Seed Medical Records
         createMedicalRecord(pat1, doc1, "Chronic Hypertension", "Moderate", "Prescribed Lisinopril 10mg. Patient advised to reduce salt intake.", "Lisinopril 10mg once daily");

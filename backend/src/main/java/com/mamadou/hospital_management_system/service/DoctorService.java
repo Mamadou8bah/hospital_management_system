@@ -90,8 +90,9 @@ public class DoctorService {
             .map(a -> new DoctorDetailResponse.AppointmentDTO(
                 a.getId(),
                 a.getPatient().getUser().getFirstName() + " " + a.getPatient().getUser().getLastName(),
-                "2023-12-10", // Mock date
-                a.getStatus().name()
+                a.getAppointmentDate().toString(),
+                a.getStatus().name(),
+                a.getReason()
             ))
             .limit(5)
             .collect(Collectors.toList());

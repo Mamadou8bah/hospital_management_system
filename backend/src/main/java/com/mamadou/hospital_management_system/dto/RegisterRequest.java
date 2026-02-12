@@ -1,13 +1,15 @@
+package com.mamadou.hospital_management_system.dto;
+
 import com.mamadou.hospital_management_system.enums.Role;
 import java.time.LocalDate;
 
 public record RegisterRequest(
-        String firstname,
-        String lastname,
+        String firstName,
+        String lastName,
         String email,
         String password,
         String address,
-        LocalDate dateOfBirth,
+        LocalDate birthDate,
         Role role
 ) {
 }

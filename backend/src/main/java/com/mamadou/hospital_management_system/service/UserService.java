@@ -33,10 +33,10 @@ public class UserService {
 
         System.out.println("Register request received");
         User user = new User();
-        user.setFirstName(request.firstname());
-        user.setLastName(request.lastname());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
         user.setEmail(request.email());
-        user.setBirthDate(request.dateOfBirth());
+        user.setBirthDate(request.birthDate());
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setAddress(request.address());
         user.setRole(request.role());
