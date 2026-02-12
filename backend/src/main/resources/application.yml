@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  application:
+    security:
+      jwt:
+        secret-key: ${JWT_SECRET}
+        expiration: ${JWT_EXPIRATION}
+  jpa:
+    hibernate:
+      ddl-auto: update

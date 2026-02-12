@@ -1,0 +1,12 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/resources/archetype-resources/**
+!**/src/test/resources/archetype-resources/**
+.mvn/
+mvnw
+mvnw.cmd
+.idea/
+.vscode/
+.git/
+*.iml
+.DS_Store
