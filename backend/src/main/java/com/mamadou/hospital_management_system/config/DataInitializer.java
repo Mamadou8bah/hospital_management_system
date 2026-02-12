@@ -6,6 +6,7 @@ import com.mamadou.hospital_management_system.model.*;
 import com.mamadou.hospital_management_system.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,19 +31,23 @@ public class DataInitializer implements CommandLineRunner {
     private final DoctorScheduleRepository doctorScheduleRepository;
     private final RecordRepository recordRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // 1. Ensure Admin User exists (Always check)
+
+        // Drop the problematic unique constraint if it exists (from potential old OneToOne mapping)
+        try {
+            jdbcTemplate.execute("ALTER TABLE doctor_schedule DROP CONSTRAINT IF EXISTS ukkd0hoxikmedf1koq8xo1k58it");
+            System.out.println("Cleaned up old unique constraint on doctor_schedule");
+        } catch (Exception e) {
+            System.out.println("Constraint cleanup skipped or not needed: " + e.getMessage());
+        }
+    
         if (!userRepository.existsByEmail("admin@clinova.com")) {
             User admin = createUser("Admin", "User", "admin@clinova.com", "password123", "Banjul, Gambia", LocalDate.of(1985, 5, 20), Role.ADMIN);
-            userRepository.save(admin);
             System.out.println("Admin user seeded: admin@clinova.com / password123");
-        }
-
-        if (doctorRepository.count() > 0) {
-            return; // Sample data already seeded
         }
 
         // 2. Seed Departments
@@ -53,7 +58,6 @@ public class DataInitializer implements CommandLineRunner {
         Department orthopedics = createDepartment("Orthopedics", "Bone and joint treatments", "Dr. Alieu Sarr", "Activity");
         Department dermatology = createDepartment("Dermatology", "Skin and hair care", "Dr. Isatou Drammeh", "User2");
         Department radiology = createDepartment("Radiology", "Imaging and X-rays", "Dr. Lamin Touray", "Search");
-        departmentRepository.saveAll(Arrays.asList(cardiology, pediatrics, surgery, maternity, orthopedics, dermatology, radiology));
 
         // 3. Seed Doctors
         Doctor doc1 = createDoctor("Modou", "Bah", "modou.bah@clinova.com", "Cardiologist", cardiology, "7012345", "Senior Cardiologist with 15 years experience.", 15, 1200);
@@ -65,6 +69,7 @@ public class DataInitializer implements CommandLineRunner {
         Doctor doc7 = createDoctor("Binta", "Sowe", "binta.sowe@clinova.com", "Obstetrician", maternity, "6601166", "High-risk pregnancy consultant.", 11, 600);
         
         doc1.setDoctorOfTheMonth(true);
+        doctorRepository.save(doc1);
 
         // 4. Seed Patients
         Patient pat1 = createPatient("Musa", "Njie", "musa.njie@gmail.com", "Male", "O+", 45, 75.5, 1.75, "Serekunda, Gambia", "7778899", "Inpatient", "Hypertension", 85, "140/90", 98);
@@ -93,103 +98,115 @@ public class DataInitializer implements CommandLineRunner {
         seedSchedule(doc7, DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(20, 0));
 
         // 6. Seed Appointments
-        createAppointment(pat1, doc1, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Heart checkup", "Consultation", BookingStatus.PENDING);
-        createAppointment(pat2, doc2, LocalDateTime.now().plusDays(2).withHour(11).withMinute(30).withSecond(0).withNano(0), "Child vaccination", "Follow-up", BookingStatus.CONFIRMED);
-        createAppointment(pat3, doc1, LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0), "Routine BP check", "Checkup", BookingStatus.COMPLETED);
-        createAppointment(pat4, doc7, LocalDateTime.now().plusDays(3).withHour(9).withMinute(0).withSecond(0).withNano(0), "Antenatal checkup", "Consultation", BookingStatus.CONFIRMED);
-        createAppointment(pat5, doc4, LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0), "Post-op review", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat6, doc5, LocalDateTime.now().plusDays(4).withHour(11).withMinute(0).withSecond(0).withNano(0), "Rash consultation", "Consultation", BookingStatus.PENDING);
-        createAppointment(pat8, doc2, LocalDateTime.now().minusHours(2), "Persistent cough", "Emergency", BookingStatus.COMPLETED);
-        createAppointment(pat9, doc1, LocalDateTime.now().plusDays(2).withHour(9).withMinute(0).withSecond(0).withNano(0), "Chronic heart issues", "Consultation", BookingStatus.CONFIRMED);
-        createAppointment(pat10, doc1, LocalDateTime.now().plusDays(5).withHour(14).withMinute(30).withSecond(0).withNano(0), "Migraine follow-up", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat11, doc4, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Cast review", "Checkup", BookingStatus.CONFIRMED);
-        createAppointment(pat12, doc6, LocalDateTime.now().minusDays(2).withHour(11).withMinute(0).withSecond(0).withNano(0), "Chest X-ray review", "Consultation", BookingStatus.COMPLETED);
-        createAppointment(pat13, doc3, LocalDateTime.now().plusDays(3).withHour(13).withMinute(0).withSecond(0).withNano(0), "Fever and chills", "Emergency", BookingStatus.CONFIRMED);
-        createAppointment(pat14, doc7, LocalDateTime.now().minusDays(5).withHour(8).withMinute(0).withSecond(0).withNano(0), "Initial prenatal", "Consultation", BookingStatus.COMPLETED);
-        createAppointment(pat15, doc3, LocalDateTime.now().plusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0), "Spinal review", "Consultation", BookingStatus.PENDING);
-        createAppointment(pat4, doc7, LocalDateTime.now().plusWeeks(2).withHour(10).withMinute(0).withSecond(0).withNano(0), "Second Trimester Scan", "Follow-up", BookingStatus.PENDING);
-        createAppointment(pat1, doc4, LocalDateTime.now().plusWeeks(1).withHour(11).withMinute(0).withSecond(0).withNano(0), "Physical Therapy", "Checkup", BookingStatus.CONFIRMED);
+        if (appointmentRepository.count() == 0) {
+            createAppointment(pat1, doc1, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Heart checkup", "Consultation", BookingStatus.PENDING);
+            createAppointment(pat2, doc2, LocalDateTime.now().plusDays(2).withHour(11).withMinute(30).withSecond(0).withNano(0), "Child vaccination", "Follow-up", BookingStatus.CONFIRMED);
+            createAppointment(pat3, doc1, LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0), "Routine BP check", "Checkup", BookingStatus.COMPLETED);
+            createAppointment(pat4, doc7, LocalDateTime.now().plusDays(3).withHour(9).withMinute(0).withSecond(0).withNano(0), "Antenatal checkup", "Consultation", BookingStatus.CONFIRMED);
+            createAppointment(pat5, doc4, LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0), "Post-op review", "Follow-up", BookingStatus.PENDING);
+            createAppointment(pat6, doc5, LocalDateTime.now().plusDays(4).withHour(11).withMinute(0).withSecond(0).withNano(0), "Rash consultation", "Consultation", BookingStatus.PENDING);
+            createAppointment(pat8, doc2, LocalDateTime.now().minusHours(2), "Persistent cough", "Emergency", BookingStatus.COMPLETED);
+            createAppointment(pat9, doc1, LocalDateTime.now().plusDays(2).withHour(9).withMinute(0).withSecond(0).withNano(0), "Chronic heart issues", "Consultation", BookingStatus.CONFIRMED);
+            createAppointment(pat10, doc1, LocalDateTime.now().plusDays(5).withHour(14).withMinute(30).withSecond(0).withNano(0), "Migraine follow-up", "Follow-up", BookingStatus.PENDING);
+            createAppointment(pat11, doc4, LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0), "Cast review", "Checkup", BookingStatus.CONFIRMED);
+            createAppointment(pat12, doc6, LocalDateTime.now().minusDays(2).withHour(11).withMinute(0).withSecond(0).withNano(0), "Chest X-ray review", "Consultation", BookingStatus.COMPLETED);
+            createAppointment(pat13, doc3, LocalDateTime.now().plusDays(3).withHour(13).withMinute(0).withSecond(0).withNano(0), "Fever and chills", "Emergency", BookingStatus.CONFIRMED);
+            createAppointment(pat14, doc7, LocalDateTime.now().minusDays(5).withHour(8).withMinute(0).withSecond(0).withNano(0), "Initial prenatal", "Consultation", BookingStatus.COMPLETED);
+            createAppointment(pat15, doc3, LocalDateTime.now().plusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0), "Spinal review", "Consultation", BookingStatus.PENDING);
+            createAppointment(pat4, doc7, LocalDateTime.now().plusWeeks(2).withHour(10).withMinute(0).withSecond(0).withNano(0), "Second Trimester Scan", "Follow-up", BookingStatus.PENDING);
+            createAppointment(pat1, doc4, LocalDateTime.now().plusWeeks(1).withHour(11).withMinute(0).withSecond(0).withNano(0), "Physical Therapy", "Checkup", BookingStatus.CONFIRMED);
+        }
 
         // 7. Seed Medical Records
-        createMedicalRecord(pat1, doc1, "Chronic Hypertension", "Moderate", "Prescribed Lisinopril 10mg. Patient advised to reduce salt intake.", "Lisinopril 10mg once daily");
-        createMedicalRecord(pat3, doc1, "Type 2 Diabetes", "Low", "Blood sugar stable. Continue current diet.", "Metformin 500mg twice daily");
-        createMedicalRecord(pat5, doc4, "Post-ACL Surgery", "High", "Wound healing well. Start physiotherapy.", "Paracetamol 500mg as needed");
-        createMedicalRecord(pat7, doc1, "Angina Pectoris", "High", "Admitted for observation. ECG scheduled.", "Nitroglycerin sublingual");
-        createMedicalRecord(pat11, doc4, "Radius Bone Fracture", "Moderate", "Applied cast. Follow up in 6 weeks.", "Ibuprofen 400mg as needed");
-        createMedicalRecord(pat12, doc6, "Bronchitis", "Low", "Chest X-ray shows minor inflammation.", "Amoxicillin 500mg (7 days)");
-        createMedicalRecord(pat13, doc3, "P. Falciparum Malaria", "High", "Rapid test positive. Started Coartem.", "Coartem (3 day course)");
-        createMedicalRecord(pat14, doc7, "Healthy Pregnancy", "Low", "Fetal heart rate normal at 145bpm.", "Folic Acid & Vit B12");
-        createMedicalRecord(pat10, doc1, "Vascular Migraine", "Moderate", "Patient reports frequent stress. Avoid triggers.", "Sumatriptan 50mg");
-        createMedicalRecord(pat9, doc1, "Atrial Fibrillation", "High", "Started Anticoagulation. Monitor closely.", "Warfarin 5mg");
-        createMedicalRecord(pat15, doc3, "Lumbar Strain", "Low", "No nerve compression found. Rest and Heat.", "Muscle relaxant (Cyclobenzaprine)");
-        createMedicalRecord(pat8, doc2, "Acute Bronchiolitis", "Moderate", "Nebulized in ER. Improved oxygenation.", "Salbutamol Inhaler");
+        if (recordRepository.count() == 0) {
+            createMedicalRecord(pat1, doc1, "Chronic Hypertension", "Moderate", "Prescribed Lisinopril 10mg. Patient advised to reduce salt intake.", "Lisinopril 10mg once daily");
+            createMedicalRecord(pat3, doc1, "Type 2 Diabetes", "Low", "Blood sugar stable. Continue current diet.", "Metformin 500mg twice daily");
+            createMedicalRecord(pat5, doc4, "Post-ACL Surgery", "High", "Wound healing well. Start physiotherapy.", "Paracetamol 500mg as needed");
+            createMedicalRecord(pat7, doc1, "Angina Pectoris", "High", "Admitted for observation. ECG scheduled.", "Nitroglycerin sublingual");
+            createMedicalRecord(pat11, doc4, "Radius Bone Fracture", "Moderate", "Applied cast. Follow up in 6 weeks.", "Ibuprofen 400mg as needed");
+            createMedicalRecord(pat12, doc6, "Bronchitis", "Low", "Chest X-ray shows minor inflammation.", "Amoxicillin 500mg (7 days)");
+            createMedicalRecord(pat13, doc3, "P. Falciparum Malaria", "High", "Rapid test positive. Started Coartem.", "Coartem (3 day course)");
+            createMedicalRecord(pat14, doc7, "Healthy Pregnancy", "Low", "Fetal heart rate normal at 145bpm.", "Folic Acid & Vit B12");
+            createMedicalRecord(pat10, doc1, "Vascular Migraine", "Moderate", "Patient reports frequent stress. Avoid triggers.", "Sumatriptan 50mg");
+            createMedicalRecord(pat9, doc1, "Atrial Fibrillation", "High", "Started Anticoagulation. Monitor closely.", "Warfarin 5mg");
+            createMedicalRecord(pat15, doc3, "Lumbar Strain", "Low", "No nerve compression found. Rest and Heat.", "Muscle relaxant (Cyclobenzaprine)");
+            createMedicalRecord(pat8, doc2, "Acute Bronchiolitis", "Moderate", "Nebulized in ER. Improved oxygenation.", "Salbutamol Inhaler");
+        }
 
         // 8. Seed Contacts
         seedContacts();
     }
 
     private Department createDepartment(String name, String desc, String head, String icon) {
-        Department dept = new Department();
-        dept.setName(name);
-        dept.setDescription(desc);
-        dept.setHeadOfDepartment(head);
-        dept.setIcon(icon);
-        return dept;
+        return departmentRepository.findByName(name).orElseGet(() -> {
+            Department dept = new Department();
+            dept.setName(name);
+            dept.setDescription(desc);
+            dept.setHeadOfDepartment(head);
+            dept.setIcon(icon);
+            return departmentRepository.save(dept);
+        });
     }
 
     private User createUser(String first, String last, String email, String password, String address, LocalDate birth, Role role) {
-        User user = new User();
-        user.setFirstName(first);
-        user.setLastName(last);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setAddress(address);
-        user.setBirthDate(birth);
-        user.setRole(role);
-        user.setCreatedAt(LocalDate.now());
-        return user;
+        return userRepository.findByEmail(email).orElseGet(() -> {
+            User user = new User();
+            user.setFirstName(first);
+            user.setLastName(last);
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setAddress(address);
+            user.setBirthDate(birth);
+            user.setRole(role);
+            user.setCreatedAt(LocalDate.now());
+            return userRepository.save(user);
+        });
     }
 
     private Doctor createDoctor(String first, String last, String email, String specialty, Department dept, String phone, String about, int exp, int patients) {
-        User user = createUser(first, last, email, "password123", "Medical Staff Housing", LocalDate.of(1980, 1, 1), Role.DOCTOR);
-        userRepository.save(user);
-
-        Doctor doc = new Doctor();
-        doc.setUser(user);
-        doc.setSpecialty(specialty);
-        doc.setDepartment(dept);
-        doc.setPhone(phone);
-        doc.setAbout(about);
-        doc.setExperienceYears(exp);
-        doc.setPatientsCount(patients);
-        doc.setAvailable(true);
-        doc.setWorkingHours("09:00 - 17:00");
-        doc.setRating(4.8);
-        return doctorRepository.save(doc);
+        return doctorRepository.findByEmail(email).orElseGet(() -> {
+            User user = createUser(first, last, email, "password123", "Medical Staff Housing", LocalDate.of(1980, 1, 1), Role.DOCTOR);
+            Doctor doc = new Doctor();
+            doc.setUser(user);
+            doc.setSpecialty(specialty);
+            doc.setDepartment(dept);
+            doc.setPhone(phone);
+            doc.setAbout(about);
+            doc.setExperienceYears(exp);
+            doc.setPatientsCount(patients);
+            doc.setAvailable(true);
+            doc.setWorkingHours("09:00 - 17:00");
+            doc.setRating(4.8);
+            return doctorRepository.save(doc);
+        });
     }
 
     private Patient createPatient(String first, String last, String email, String gender, String blood, int age, double weight, double height, String address, String phone, String status, String type, int pulse, String bp, int oxygen) {
-        User user = createUser(first, last, email, "password123", address, LocalDate.of(2026 - age, 1, 1), Role.PATIENT);
-        userRepository.save(user);
-
-        Patient pat = new Patient();
-        pat.setUser(user);
-        pat.setGender(gender);
-        pat.setBloodGroup(blood);
-        pat.setAge(age);
-        pat.setWeight(weight);
-        pat.setHeight(height);
-        pat.setAddress(address);
-        pat.setPhone(phone);
-        pat.setStatus(status);
-        pat.setType(type);
-        pat.setPulseRate(pulse);
-        pat.setBloodPressure(bp);
-        pat.setBloodOxygen(oxygen);
-        return patientRepository.save(pat);
+        return patientRepository.findByUserEmail(email).orElseGet(() -> {
+            User user = createUser(first, last, email, "password123", address, LocalDate.of(LocalDate.now().getYear() - age, 1, 1), Role.PATIENT);
+            Patient pat = new Patient();
+            pat.setUser(user);
+            pat.setGender(gender);
+            pat.setBloodGroup(blood);
+            pat.setAge(age);
+            pat.setWeight(weight);
+            pat.setHeight(height);
+            pat.setAddress(address);
+            pat.setPhone(phone);
+            pat.setStatus(status);
+            pat.setType(type);
+            pat.setPulseRate(pulse);
+            pat.setBloodPressure(bp);
+            pat.setBloodOxygen(oxygen);
+            return patientRepository.save(pat);
+        });
     }
 
     private void seedSchedule(Doctor doc, DayOfWeek day, LocalTime start, LocalTime end) {
+        if (doctorScheduleRepository.findByDoctor(doc).stream()
+                .anyMatch(s -> s.getDayOfWeek() == day)) {
+            return;
+        }
         DoctorSchedule schedule = new DoctorSchedule();
         schedule.setDoctor(doc);
         schedule.setDayOfWeek(day);
