@@ -34,11 +34,18 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        if (userRepository.count() > 0) {
-            return; // Data already seeded
+        // 1. Ensure Admin User exists (Always check)
+        if (!userRepository.existsByEmail("admin@clinova.com")) {
+            User admin = createUser("Admin", "User", "admin@clinova.com", "password123", "Banjul, Gambia", LocalDate.of(1985, 5, 20), Role.ADMIN);
+            userRepository.save(admin);
+            System.out.println("Admin user seeded: admin@clinova.com / password123");
         }
 
-        // 1. Seed Departments
+        if (doctorRepository.count() > 0) {
+            return; // Sample data already seeded
+        }
+
+        // 2. Seed Departments
         Department cardiology = createDepartment("Cardiology", "Heart related issues", "Dr. Modou Bah", "Heart");
         Department pediatrics = createDepartment("Pediatrics", "Children healthcare", "Dr. Fatou Camara", "Baby");
         Department surgery = createDepartment("Surgery", "General and specialized surgery", "Dr. Ebrahima Jallow", "BriefcaseMedical");
@@ -47,10 +54,6 @@ public class DataInitializer implements CommandLineRunner {
         Department dermatology = createDepartment("Dermatology", "Skin and hair care", "Dr. Isatou Drammeh", "User2");
         Department radiology = createDepartment("Radiology", "Imaging and X-rays", "Dr. Lamin Touray", "Search");
         departmentRepository.saveAll(Arrays.asList(cardiology, pediatrics, surgery, maternity, orthopedics, dermatology, radiology));
-
-        // 2. Seed Admin User
-        User admin = createUser("Admin", "User", "admin@clinova.com", "password123", "Banjul, Gambia", LocalDate.of(1985, 5, 20), Role.ADMIN);
-        userRepository.save(admin);
 
         // 3. Seed Doctors
         Doctor doc1 = createDoctor("Modou", "Bah", "modou.bah@clinova.com", "Cardiologist", cardiology, "7012345", "Senior Cardiologist with 15 years experience.", 15, 1200);
@@ -220,6 +223,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void seedContacts() {
+        if (contactRepository.count() > 0) return;
+        
         Contact c1 = new Contact();
         c1.setName("General Reception");
         c1.setRole("Hospital Entry");

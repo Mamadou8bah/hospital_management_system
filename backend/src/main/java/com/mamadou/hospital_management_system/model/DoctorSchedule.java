@@ -17,10 +17,11 @@ public class DoctorSchedule {
     private Long id;
 
     @NotNull
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @OneToMany
+    @OneToMany(mappedBy = "doctorSchedule")
     private List<Appointment> appointments;
 
     int availableSlots;
